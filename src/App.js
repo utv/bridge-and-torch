@@ -5,6 +5,27 @@ import Side from './Side'
 import Middle from './Middle'
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      ready: false,
+      weights: []
+    }
+  }
+
+  renderMiddlePanel() {
+    const readyButton = this.state.weights.length > 0
+      ? <button>Ready</button>
+      : null
+    return (
+      <div className='middle'>
+        <div className='middle-item'>
+          {readyButton}
+        </div>
+      </div>
+    )
+  }
+
   render() {
     return (
       <div className="App">
@@ -13,9 +34,15 @@ class App extends Component {
           <h1 className="App-title">Bridge And Torch</h1>
         </header>
         <div className='wrapper'>
-          <Side left={true} />
-          <Middle />
-          <Side />
+          <Side
+            left={true}
+            {...this.state.weights}
+          />
+          {this.renderMiddlePanel()}
+          <Side
+            left={false}
+            {...this.state.weights}
+          />
         </div>
       </div>
     );

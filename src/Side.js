@@ -8,16 +8,21 @@ export default class Side extends React.Component {
   }
 
   render() {
-    return (
-      <ul className='side left'>
-        <li className='side-item'>
+    const listItems = typeof this.props.weights !== 'undefined'
+      ? this.props.weights.map((w, idx) => (
+        <li
+          key={idx}
+          className='side-item'
+        >
           <div className='circle'>
-            <input
-              type='text'
-              className='weight-input'
-            />
+            <input type='text' className='weight-input' />
           </div>
         </li>
+      ))
+      : null
+    return (
+      <ul className='side left'>
+        {listItems}
       </ul>
     )
   }
