@@ -11,10 +11,45 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <Side />
+        <div className='wrapper'>
+          <ul className='side left'>
+            <li className='side-item'>
+              <div className='circle'></div>
+            </li>
+            <li className='side-item'>
+              <div className='circle'></div>
+            </li>
+            <li className='side-item'>
+              <div className='circle'></div>
+            </li>
+          </ul>
+          <ul className='side left'>
+            <li className='side-item'>
+              <div className='circle'></div>
+            </li>
+            <li className='side-item'>
+              <div className='circle'></div>
+            </li>
+            <li className='side-item'>
+              <div className='circle'></div>
+            </li>
+          </ul>
+          <div className='middle'>
+            <div className='middle-item'></div>
+            <div className='middle-item'></div>
+            <div className='middle-item'></div>
+          </div>
+          <ul className='side right'>
+            <li className='side-item'>1</li>
+            <li className='side-item'>2</li>
+            <li className='side-item'>3</li>
+          </ul>
+          <ul className='side right'>
+            <li className='side-item'>1</li>
+            <li className='side-item'>2</li>
+            <li className='side-item'>3</li>
+          </ul>
+        </div>
       </div>
     );
   }

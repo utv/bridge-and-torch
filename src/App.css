@@ -26,3 +26,32 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.wrapper {
+  display: flex;
+  /* margin: 0 auto; */
+  
+  padding: 20px 20px 20px 20px; 
+  justify-content: center;
+}
+
+.middle {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background: teal;
+  width: 50%;
+}
+
+.middle-item {
+  background: salmon;
+  height: 20%;
+}
+
+.circle {
+  margin: 5px;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  background: crimson;
+}
