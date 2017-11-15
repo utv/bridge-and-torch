@@ -50,8 +50,21 @@
 
 .circle {
   margin: 5px;
-  width: 40px;
-  height: 40px;
-  border-radius: 100%;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
   background: crimson;
+  line-height: 100px;
+  /* text-align: center; */
+}
+
+.weight-input {
+  width: 70%;
+  margin: 0 auto;
+  caret-color: orange;
+  background: crimson;
+  border: none;
+  text-align: center;
+  font-size: 1em;
+  color: orange;
 }

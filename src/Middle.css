@@ -1,0 +1,12 @@
+.middle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background: teal;
+    width: 50%;
+  }
+  
+  .middle-item {
+    background: salmon;
+    height: 20%;
+  }
