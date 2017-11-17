@@ -14,7 +14,8 @@ class App extends Component {
     }
     this.state = {
       currentState: this.gameState.PREPARING,
-      weights: [-5, 10, 12, 8]
+      // weights: [5, 10, 12]
+      weights: [5, 10, 12, 8, 500, 10, 12, 8]
     }
   }
 
@@ -31,6 +32,38 @@ class App extends Component {
     )
   }
 
+  test() {
+    return (
+      <ul className='side left'>
+        <WeightList
+          items={this.state.weights.filter((val) => val > 0)}
+        />
+      </ul>
+    )
+  }
+
+  ulWithinDiv(side) {
+    return (
+      <div>
+        <ul className={'side ' + side}>
+          <WeightList
+            items={this.state.weights.filter((val) => val > 0)}
+          />
+        </ul>
+      </div>
+    )
+  }
+
+  ulOnly(side) {
+    return (
+      <ul className={'side ' + side}>
+        <WeightList
+          items={this.state.weights.filter((val) => val > 0)}
+        />
+      </ul>
+    )
+  }
+
   render() {
     return (
       <div className="App">
@@ -39,17 +72,11 @@ class App extends Component {
           <h1 className="App-title">Bridge And Torch</h1>
         </header>
         <div className='wrapper'>
-          <ul className='side left'>
-            <WeightList
-              items={this.state.weights.filter((val) => val > 0)}
-            />
-          </ul>
+          {this.ulWithinDiv('left')}
+          {/* this.ulOnly('left') */}
           {this.renderMiddlePanel()}
-          <ul className='side right'>
-            <WeightList
-              items={this.state.weights.filter((val) => val < 0)}
-            />
-          </ul>
+          {this.ulWithinDiv('right')}
+          {/* this.ulOnly('left') */}
         </div>
       </div>
     );

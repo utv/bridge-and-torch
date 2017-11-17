@@ -29,10 +29,13 @@
 
 .wrapper {
   display: flex;
-  /* margin: 0 auto; */
+  flex-wrap: wrap;
+  height: 500px;
+  margin: 0 auto;
   
   padding: 20px 20px 20px 20px; 
   justify-content: center;
+  
 }
 
 .middle {
@@ -74,6 +77,8 @@
   padding: 0;
   display: inline-flex;
   flex-direction: column;
+  flex-wrap: wrap;
+  max-height: 80%;
   margin: 0;
   /* margin: 0 auto; */
 }
