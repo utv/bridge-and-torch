@@ -44,7 +44,7 @@ class App extends Component {
 
   ulWithinDiv(side) {
     return (
-      <div>
+      <div style={{ display: 'inline-block' }}>
         <ul className={'side ' + side}>
           <WeightList
             items={this.state.weights.filter((val) => val > 0)}
@@ -64,6 +64,34 @@ class App extends Component {
     )
   }
 
+  renderTable(side) {
+    const NUM_COLUMNS = 3
+    const rows = this.state.weights.reduce((acc, val, idx) => {
+      const td = (
+        <td>
+          <div className='circle'>
+            {val > 0 ? val : val * -1}
+          </div>
+        </td>
+      )
+
+      if (idx % NUM_COLUMNS !== 0) {
+        const row = acc.pop()
+        row.push(td)
+        acc.push(row)
+      } else {
+        acc.push([td])
+      }
+      return acc
+    }, [[]])
+
+    return (
+      <table>
+        {rows.map((row, rid) => <tr key={rid}>{row}</tr>)}
+      </table>
+    )
+  }
+
   render() {
     return (
       <div className="App">
@@ -72,11 +100,13 @@ class App extends Component {
           <h1 className="App-title">Bridge And Torch</h1>
         </header>
         <div className='wrapper'>
-          {this.ulWithinDiv('left')}
+          {/* this.ulWithinDiv('left') */}
           {/* this.ulOnly('left') */}
+          {this.renderTable('left')}
           {this.renderMiddlePanel()}
-          {this.ulWithinDiv('right')}
-          {/* this.ulOnly('left') */}
+          {this.renderTable('right')}
+          {/* this.ulWithinDiv('right') */}
+          {/* this.ulOnly('right') */}
         </div>
       </div>
     );
