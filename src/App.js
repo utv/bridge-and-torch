@@ -13,8 +13,10 @@ class App extends Component {
       PLAYING: 1,
       DONE: 2
     }
+    this.LEFT = 'L'
+    this.RIGHT = 'R'
     this.state = {
-      currentState: this.gameState.PREPARING,
+      gameState: this.gameState.PREPARING,
       weights: [],
       inputWeight: ''
       // weights: [5, 10, 12]
@@ -61,11 +63,23 @@ class App extends Component {
   renderTable(side) {
     if (this.state.weights.length === 0) return
     const NUM_COLUMNS = 3
+    const theWeights = side === this.LEFT
+      ? this.state.weights.filter((w) => w > 0)
+      : this.state.weights.filter((w) => w < 0)
     const rows = this.state.weights.reduce((acc, val, idx) => {
+      const value =
+        val > 0 && side === this.LEFT
+          ? val
+          : val < 0 && side === this.RIGHT
+            ? val * -1
+            : ''
       const td = (
         <td key={idx}>
-          <Circle>
-            {val > 0 ? val : val * -1}
+          <Circle
+            bgColor={this.LEFT === side ? 'crimson' : 'darkcyan'}
+            weight={value}
+          >
+            {value}
           </Circle>
         </td>
       )
@@ -97,9 +111,9 @@ class App extends Component {
           <h1 className="App-title">Bridge And Torch</h1>
         </header>
         <div className='wrapper'>
-          {this.renderTable('left')}
+          {this.renderTable(this.LEFT)}
           {this.renderMiddlePanel()}
-          {this.renderTable('right')}
+          {this.renderTable(this.RIGHT)}
         </div>
       </div>
     );
