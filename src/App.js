@@ -2,21 +2,22 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import WeightList from './WeightList'
+// import WeightList from './WeightList'
 import Circle from './Circle'
 
 class App extends Component {
   constructor(props) {
     super(props)
-    this.gameState = {
+    this.THE_GAME_STATES = {
       PREPARING: 0,
-      PLAYING: 1,
-      DONE: 2
+      PLAYING_L2R: 1,
+      PLAYING_R2L: 2,
+      DONE: 3
     }
     this.LEFT = 'L'
     this.RIGHT = 'R'
     this.state = {
-      gameState: this.gameState.PREPARING,
+      gameState: this.THE_GAME_STATES.PREPARING,
       weights: [],
       inputWeight: ''
       // weights: [5, 10, 12]
@@ -39,10 +40,23 @@ class App extends Component {
     })
   }
 
+  onReadyButtonClick(e) {
+    e.preventDefault()
+
+    this.setState({ gameState: this.THE_GAME_STATES.PLAYING_L2R })
+  }
+
+  renderMiddleButton() {
+    if (this.state.weights.length === 0) return null
+    if (this.state.gameState === this.THE_GAME_STATES.PREPARING)
+      return <button onClick={this.onReadyButtonClick.bind(this)}>Ready</button>
+    if (this.state.gameState === this.THE_GAME_STATES.PLAYING_L2R)
+      return <button>{'==>'}</button>
+    if (this.state.gameState === this.THE_GAME_STATES.PLAYING_R2L)
+      return <button>{'<=='}</button>
+  }
+
   renderMiddlePanel() {
-    const readyButton = this.state.weights.length > 0
-      ? <button>Ready</button>
-      : null
     return (
       <div className='middle'>
         <div>
@@ -54,7 +68,7 @@ class App extends Component {
               onKeyPress={this.handleKeyPress.bind(this)}
               autoFocus />
           </Circle>
-          {readyButton}
+          {this.renderMiddleButton()}
         </div>
       </div>
     )
@@ -63,9 +77,9 @@ class App extends Component {
   renderTable(side) {
     if (this.state.weights.length === 0) return
     const NUM_COLUMNS = 3
-    const theWeights = side === this.LEFT
-      ? this.state.weights.filter((w) => w > 0)
-      : this.state.weights.filter((w) => w < 0)
+    /* const theWeights = side === this.LEFT
+    ? this.state.weights.filter((w) => w > 0)
+    : this.state.weights.filter((w) => w < 0) */
     const rows = this.state.weights.reduce((acc, val, idx) => {
       const value =
         val > 0 && side === this.LEFT
@@ -94,6 +108,7 @@ class App extends Component {
       return acc
     }, [[]])
 
+    console.log('rows', rows)
     return (
       <table>
         <tbody>
