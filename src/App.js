@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-// import WeightList from './WeightList'
+import WeightList from './WeightList'
 import Circle from './Circle'
+
 
 class App extends Component {
   constructor(props) {
@@ -126,9 +127,16 @@ class App extends Component {
           <h1 className="App-title">Bridge And Torch</h1>
         </header>
         <div className='wrapper'>
-          {this.renderTable(this.LEFT)}
+          {/* this.renderTable(this.LEFT) */}
+          <WeightList
+            weights={this.state.weights}
+            render={weight => <Circle>{weight}</Circle>}
+          />
           {this.renderMiddlePanel()}
-          {this.renderTable(this.RIGHT)}
+          <WeightList
+            weights={this.state.weights}
+            render={weight => <Circle>{weight}</Circle>}
+          />
         </div>
       </div>
     );

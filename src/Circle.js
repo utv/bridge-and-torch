@@ -2,7 +2,7 @@ import React from 'react'
 
 export default class Circle extends React.Component {
   render() {
-    const value = this.props
+    // const value = this.props
     const bgColor = typeof this.props.bgColor !== 'undefined' ? this.props.bgColor : 'darkcyan'
     return (
       <div style={{
