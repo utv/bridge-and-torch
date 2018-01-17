@@ -120,6 +120,21 @@ class App extends Component {
   }
 
   render() {
+    const bgColor = (weight, side) => weight > 0 && side === 'L'
+      ? 'crimson'
+      : 'darkcyan'
+
+    const renderCircle = (weight, side) => {
+      if (weight > 0 && side === 'L')
+        return <Circle bgColor='crimson'>{weight}</Circle>
+      else if (weight < 0 && side === 'L')
+        return <Circle bgColor='darkcyan'></Circle>
+      if (weight < 0 && side === 'R')
+        return <Circle bgColor='crimson'>{weight}</Circle>
+      else if (weight > 0 && side === 'R')
+        return <Circle bgColor='darkcyan'></Circle>
+    }
+
     return (
       <div className="App">
         <header className="App-header">
@@ -127,15 +142,16 @@ class App extends Component {
           <h1 className="App-title">Bridge And Torch</h1>
         </header>
         <div className='wrapper'>
-          {/* this.renderTable(this.LEFT) */}
           <WeightList
             weights={this.state.weights}
-            render={weight => <Circle>{weight}</Circle>}
+            side="L"
+            render={(weight, side) => renderCircle(weight, side)}
           />
           {this.renderMiddlePanel()}
           <WeightList
             weights={this.state.weights}
-            render={weight => <Circle>{weight}</Circle>}
+            side="R"
+            render={(weight, side) => renderCircle(weight, side)}
           />
         </div>
       </div>

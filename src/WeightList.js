@@ -19,10 +19,11 @@ export default class WeightList extends React.Component {
     /* const theWeights = side === this.LEFT
     ? this.state.weights.filter((w) => w > 0)
     : this.state.weights.filter((w) => w < 0) */
+
     const rows = this.props.weights.reduce((acc, val, idx) => {
       const td = (
         <td key={idx}>
-          {this.props.render(val)}
+          {this.props.render(val, this.props.side)}
         </td>
       )
 
