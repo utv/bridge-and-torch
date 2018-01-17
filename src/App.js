@@ -131,8 +131,7 @@ class App extends Component {
         return <Circle bgColor='darkcyan'></Circle>
       if (weight < 0 && side === 'R')
         return <Circle bgColor='crimson'>{weight}</Circle>
-      else if (weight > 0 && side === 'R')
-        return <Circle bgColor='darkcyan'></Circle>
+      return <Circle bgColor='darkcyan'></Circle>
     }
 
     return (
