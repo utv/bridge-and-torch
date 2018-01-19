@@ -4,7 +4,7 @@ import './App.css';
 
 import WeightList from './WeightList'
 import Circle from './Circle'
-
+import CirCleContainer from './CirCleContainer'
 
 class App extends Component {
   constructor(props) {
@@ -22,14 +22,10 @@ class App extends Component {
       weights: [],
       inputWeight: '',
       selectedWeights: [],
-      buttonCaption: ''
+      buttonCaption: 'Ready'
       // weights: [5, 10, 12]
       // weights: [5, 10, 12, 8, 500, 10, 12, 8]
     }
-  }
-
-  getButtonCaption() {
-    return ''
   }
 
   handleKeyPress(e) {
@@ -37,8 +33,7 @@ class App extends Component {
     const val = e.target.value
     this.setState((prevState) => ({
       weights: prevState.weights.concat(val),
-      inputWeight: '',
-      buttonCaption: this.getButtonCaption()
+      inputWeight: ''
     }))
   }
 
@@ -55,12 +50,12 @@ class App extends Component {
   onMiddleButtonClick(e) {
     e.preventDefault()
     if (this.state.gameState === this.gameStates.PREPARING)
-      this.setState((prevSate) => ({
+      this.setState({
         inputWeight: '',
         buttonCaption: '==>',
         selectedWeights: [],
         gameState: this.gameStates.PLAYING_L2R
-      }))
+      })
 
     else if (
       this.state.gameState === this.gameStates.PLAYING_L2R
@@ -93,38 +88,45 @@ class App extends Component {
   }
 
   renderMiddlePanel() {
+    const middleInputElement = this.state.gameState === this.gameStates.PREPARING
+      ? (
+        <input
+          className='weight-input'
+          value={this.state.inputWeight}
+          onChange={this.handleChange.bind(this)}
+          onKeyPress={this.handleKeyPress.bind(this)}
+          autoFocus
+        />
+      )
+      : (
+        <button onClick={this.onMiddleButtonClick.bind(this)}>
+          {this.state.buttonCaption}
+        </button>
+      )
+    const startButton = this.state.gameState === this.gameStates.PREPARING
+      ? (
+        < button onClick={this.onMiddleButtonClick.bind(this)} >
+          {this.state.buttonCaption}
+        </button>
+      )
+      : null
     return (
       <div className='middle'>
         <div>
           <Circle>
-            <input
-              className='weight-input'
-              value={this.state.inputWeight}
-              onChange={this.handleChange.bind(this)}
-              onKeyPress={this.handleKeyPress.bind(this)}
-              autoFocus />
+            {middleInputElement}
           </Circle>
-          {this.renderMiddleButton()}
+          {startButton}
         </div>
       </div>
     )
   }
 
+  onCirCleClick(e) {
+
+  }
+
   render() {
-    const bgColor = (weight, side) => weight > 0 && side === 'L'
-      ? 'crimson'
-      : 'darkcyan'
-
-    const renderCircle = (weight, side) => {
-      if (weight > 0 && side === 'L')
-        return <Circle bgColor='crimson'>{weight}</Circle>
-      else if (weight < 0 && side === 'L')
-        return <Circle bgColor='darkcyan'></Circle>
-      if (weight < 0 && side === 'R')
-        return <Circle bgColor='crimson'>{weight}</Circle>
-      return <Circle bgColor='darkcyan'></Circle>
-    }
-
     return (
       <div className="App">
         <header className="App-header">
@@ -135,13 +137,25 @@ class App extends Component {
           <WeightList
             weights={this.state.weights}
             side="L"
-            render={(weight, side) => renderCircle(weight, side)}
+            render={(weight, side) =>
+              <CirCleContainer
+                weight={weight}
+                side={side}
+                onClick={this.onCirCleClick.bind(this)}
+              />
+            }
           />
           {this.renderMiddlePanel()}
           <WeightList
             weights={this.state.weights}
             side="R"
-            render={(weight, side) => renderCircle(weight, side)}
+            render={(weight, side) =>
+              <CirCleContainer
+                weight={weight}
+                side={side}
+                onClick={this.onCirCleClick.bind(this)}
+              />
+            }
           />
         </div>
       </div>
