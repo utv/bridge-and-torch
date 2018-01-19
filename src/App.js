@@ -9,7 +9,7 @@ import Circle from './Circle'
 class App extends Component {
   constructor(props) {
     super(props)
-    this.THE_GAME_STATES = {
+    this.gameStates = {
       PREPARING: 0,
       PLAYING_L2R: 1,
       PLAYING_R2L: 2,
@@ -18,12 +18,18 @@ class App extends Component {
     this.LEFT = 'L'
     this.RIGHT = 'R'
     this.state = {
-      gameState: this.THE_GAME_STATES.PREPARING,
+      gameState: this.gameStates.PREPARING,
       weights: [],
-      inputWeight: ''
+      inputWeight: '',
+      selectedWeights: [],
+      buttonCaption: ''
       // weights: [5, 10, 12]
       // weights: [5, 10, 12, 8, 500, 10, 12, 8]
     }
+  }
+
+  getButtonCaption() {
+    return ''
   }
 
   handleKeyPress(e) {
@@ -31,7 +37,8 @@ class App extends Component {
     const val = e.target.value
     this.setState((prevState) => ({
       weights: prevState.weights.concat(val),
-      inputWeight: ''
+      inputWeight: '',
+      buttonCaption: this.getButtonCaption()
     }))
   }
 
@@ -41,20 +48,48 @@ class App extends Component {
     })
   }
 
-  onReadyButtonClick(e) {
-    e.preventDefault()
+  isDone() {
+    return false
+  }
 
-    this.setState({ gameState: this.THE_GAME_STATES.PLAYING_L2R })
+  onMiddleButtonClick(e) {
+    e.preventDefault()
+    if (this.state.gameState === this.gameStates.PREPARING)
+      this.setState((prevSate) => ({
+        inputWeight: '',
+        buttonCaption: '==>',
+        selectedWeights: [],
+        gameState: this.gameStates.PLAYING_L2R
+      }))
+
+    else if (
+      this.state.gameState === this.gameStates.PLAYING_L2R
+    )
+      this.setState((prevState) => ({
+        weights: this.moveL2R(prevState.weights),
+        inputWeight: '',
+        selectedWeights: []
+      }))
+
+    else if (
+      this.state.gameState === this.gameStates.PLAYING_R2L
+    )
+      this.setState((prevState) => ({
+        weights: this.moveR2L(prevState.weights),
+        inputWeight: '',
+        buttonCaption: '<==',
+        selectedWeights: [],
+        gameState: this.gameStates.PLAYING_L2R
+      }))
   }
 
   renderMiddleButton() {
     if (this.state.weights.length === 0) return null
-    if (this.state.gameState === this.THE_GAME_STATES.PREPARING)
-      return <button onClick={this.onReadyButtonClick.bind(this)}>Ready</button>
-    if (this.state.gameState === this.THE_GAME_STATES.PLAYING_L2R)
-      return <button>{'==>'}</button>
-    if (this.state.gameState === this.THE_GAME_STATES.PLAYING_R2L)
-      return <button>{'<=='}</button>
+    return (
+      <button onClick={this.onMiddleButtonClick.bind(this)}>
+        {this.state.buttonCaption}
+      </button>
+    )
   }
 
   renderMiddlePanel() {
