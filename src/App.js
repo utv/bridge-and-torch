@@ -126,6 +126,22 @@ class App extends Component {
 
   }
 
+  renderWeightList(side) {
+    return (
+      <WeightList
+        weights={this.state.weights}
+        side={side}
+        render={(weight, side) =>
+          <CirCleContainer
+            weight={weight}
+            side={side}
+            onClick={this.onCirCleClick.bind(this)}
+          />
+        }
+      />
+    )
+  }
+
   render() {
     return (
       <div className="App">
@@ -134,29 +150,9 @@ class App extends Component {
           <h1 className="App-title">Bridge And Torch</h1>
         </header>
         <div className='wrapper'>
-          <WeightList
-            weights={this.state.weights}
-            side="L"
-            render={(weight, side) =>
-              <CirCleContainer
-                weight={weight}
-                side={side}
-                onClick={this.onCirCleClick.bind(this)}
-              />
-            }
-          />
+          {this.renderWeightList('L')}
           {this.renderMiddlePanel()}
-          <WeightList
-            weights={this.state.weights}
-            side="R"
-            render={(weight, side) =>
-              <CirCleContainer
-                weight={weight}
-                side={side}
-                onClick={this.onCirCleClick.bind(this)}
-              />
-            }
-          />
+          {this.renderWeightList('R')}
         </div>
       </div>
     );
