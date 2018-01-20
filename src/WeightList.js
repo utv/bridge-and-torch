@@ -21,7 +21,7 @@ export default class WeightList extends React.Component {
     const rows = this.props.weights.reduce((acc, val, idx) => {
       const td = (
         <td key={idx}>
-          {this.props.render(val, this.props.side)}
+          {this.props.render(idx, val, this.props.side)}
         </td>
       )
 
@@ -35,7 +35,7 @@ export default class WeightList extends React.Component {
       return acc
     }, [[]])
 
-    console.log('rows', rows)
+
     return (
       <table style={tableStyle}>
         <tbody>

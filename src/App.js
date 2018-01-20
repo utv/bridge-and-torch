@@ -21,7 +21,7 @@ class App extends Component {
       gameState: this.gameStates.PREPARING,
       weights: [],
       inputWeight: '',
-      selectedWeights: [],
+      selectedWeightIndices: [],
       buttonCaption: 'Ready'
       // weights: [5, 10, 12]
       // weights: [5, 10, 12, 8, 500, 10, 12, 8]
@@ -30,7 +30,7 @@ class App extends Component {
 
   handleKeyPress(e) {
     if (e.key !== 'Enter') return
-    const val = e.target.value
+    const val = e.target.value * 1
     this.setState((prevState) => ({
       weights: prevState.weights.concat(val),
       inputWeight: ''
@@ -53,7 +53,7 @@ class App extends Component {
       this.setState({
         inputWeight: '',
         buttonCaption: '==>',
-        selectedWeights: [],
+        selectedWeightIndices: [],
         gameState: this.gameStates.PLAYING_L2R
       })
 
@@ -63,7 +63,7 @@ class App extends Component {
       this.setState((prevState) => ({
         weights: this.moveL2R(prevState.weights),
         inputWeight: '',
-        selectedWeights: []
+        selectedWeightIndices: []
       }))
 
     else if (
@@ -73,7 +73,7 @@ class App extends Component {
         weights: this.moveR2L(prevState.weights),
         inputWeight: '',
         buttonCaption: '<==',
-        selectedWeights: [],
+        selectedWeightIndices: [],
         gameState: this.gameStates.PLAYING_L2R
       }))
   }
@@ -122,8 +122,51 @@ class App extends Component {
     )
   }
 
-  onCirCleClick(e) {
+  onCirCleClick(clickedWeightIndex, side, e) {
 
+    const { gameState, weights } = this.state
+    const isClickedOnLeftValid =
+      (
+        side === 'L'
+        && gameState === this.gameStates.PLAYING_L2R
+        && weights[clickedWeightIndex] > 0
+      )
+    const isClickedOnRightValid =
+      (
+        side === 'R'
+        && gameState === this.gameStates.PLAYING_R2L
+        && weights[clickedWeightIndex] < 0
+      )
+
+    if (isClickedOnLeftValid || isClickedOnRightValid)
+      this.setState((prevState) => {
+
+        return {
+          selectedWeightIndices:
+            prevState.selectedWeightIndices.concat(clickedWeightIndex)
+        }
+      })
+  }
+
+  isSelected(weightIndex, side) {
+
+    if (
+      side === 'L'
+      && this.state.gameState === this.gameStates.PLAYING_L2R
+      && this.state.weights[weightIndex] > 0
+      && this.state.selectedWeightIndices.includes(weightIndex)
+    )
+      return true
+
+    if (
+      side === 'R'
+      && this.state.gameState === this.gameStates.PLAYING_R2L
+      && this.state.weights[weightIndex] < 0
+      && this.state.selectedWeightIndices.includes(weightIndex)
+    )
+      return true
+
+    return false
   }
 
   renderWeightList(side) {
@@ -131,11 +174,12 @@ class App extends Component {
       <WeightList
         weights={this.state.weights}
         side={side}
-        render={(weight, side) =>
+        render={(weightIndex, weight, side) =>
           <CirCleContainer
             weight={weight}
             side={side}
-            onClick={this.onCirCleClick.bind(this)}
+            selected={this.isSelected(weightIndex, side)}
+            onClick={this.onCirCleClick.bind(this, weightIndex, side)}
           />
         }
       />
