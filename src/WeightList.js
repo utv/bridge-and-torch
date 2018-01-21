@@ -5,23 +5,13 @@ export default class WeightList extends React.Component {
 
   render() {
     if (this.props.weights.length === 0) return null
-    const radius = '15px'
-    const tableStyle = typeof this.props.side === 'undefined'
-      ? {}
-      : this.props.side === 'L'
-        ? {
-          borderTopLeftRadius: radius,
-          borderBottomLeftRadius: radius
-        }
-        : {
-          borderTopRightRadius: radius,
-          borderBottomRightRadius: radius
-        }
+    // const radius = '15px'
+
     const NUM_COLUMNS = 3
-    const rows = this.props.weights.reduce((acc, val, idx) => {
+    const rows = this.props.weightIndices.reduce((acc, wIndex, idx) => {
       const td = (
         <td key={idx}>
-          {this.props.render(idx, val, this.props.side)}
+          {this.props.render(wIndex, this.props.weights[wIndex], this.props.side)}
         </td>
       )
 
@@ -37,7 +27,7 @@ export default class WeightList extends React.Component {
 
 
     return (
-      <table style={tableStyle}>
+      <table style={this.props.tableStyle}>
         <tbody>
           {rows.map((row, rid) => <tr key={rid}>{row}</tr>)}
         </tbody>

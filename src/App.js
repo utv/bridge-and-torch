@@ -89,7 +89,8 @@ class App extends Component {
 
   renderMiddlePanel() {
     const middleInputElement = this.state.gameState === this.gameStates.PREPARING
-      ? (
+      ?
+      (
         <input
           className='weight-input'
           value={this.state.inputWeight}
@@ -98,13 +99,15 @@ class App extends Component {
           autoFocus
         />
       )
-      : (
+      :
+      (
         <button onClick={this.onMiddleButtonClick.bind(this)}>
           {this.state.buttonCaption}
         </button>
       )
     const startButton = this.state.gameState === this.gameStates.PREPARING
-      ? (
+      ?
+      (
         < button onClick={this.onMiddleButtonClick.bind(this)} >
           {this.state.buttonCaption}
         </button>
@@ -148,6 +151,23 @@ class App extends Component {
       })
   }
 
+  onLeftWeightClick(weightIndex, e) {
+    if (!this.isLeftSelected(weightIndex))
+      this.setState((prevState) => {
+        return {
+          selectedWeightIndices:
+            prevState.selectedWeightIndices.concat(weightIndex)
+        }
+      })
+    else
+      this.setState((prevState) => {
+        return {
+          selectedWeightIndices:
+            prevState.selectedWeightIndices.filter((wIndex) => wIndex !== weightIndex)
+        }
+      })
+  }
+
   isSelected(weightIndex, side) {
 
     if (
@@ -169,7 +189,16 @@ class App extends Component {
     return false
   }
 
-  renderWeightList(side) {
+  isLeftSelected(weightIndex) {
+    const { gameState } = this.state
+    return (
+      gameState === this.gameStates.PLAYING_L2R || gameState === this.gameStates.PREPARING
+      && this.state.weights[weightIndex] > 0
+      && this.state.selectedWeightIndices.includes(weightIndex)
+    )
+  }
+
+  /* renderWeightList(side) {
     return (
       <WeightList
         weights={this.state.weights}
@@ -184,6 +213,67 @@ class App extends Component {
         }
       />
     )
+  } */
+
+  renderLeftWeightList() {
+    const weightIndices = this.state.weights.map((w, index) => {
+      if (w > 0) return index
+      return null
+    })
+
+    const emptyWeightIndices = new Array(this.state.weights.length - weightIndices.length).fill('')
+    const totalWeightIndices = weightIndices.concat(emptyWeightIndices)
+    const radius = '15px'
+
+    return (
+      <WeightList
+        weights={this.state.weights}
+        weightIndices={totalWeightIndices}
+        tableStyle={{
+          borderTopLeftRadius: radius,
+          borderBottomLeftRadius: radius
+        }}
+        // side={side}
+        render={(weightIndex, weight) =>
+          <CirCleContainer
+            weight={weight}
+            // side={side}
+            selected={this.isLeftSelected(weightIndex)}
+            onClick={this.onLeftWeightClick.bind(this, weightIndex)}
+          />
+        }
+      />
+    )
+  }
+
+  renderRightWeightList() {
+    const weightIndices = this.state.weights.map((w, index) => {
+      if (w < 0) return index
+      return null
+    })
+
+    const emptyWeightIndices = new Array(this.state.weights.length - weightIndices.length).fill('')
+    const totalWeightIndices = weightIndices.concat(emptyWeightIndices)
+    const radius = '15px'
+
+    return (
+      <WeightList
+        weights={this.state.weights}
+        weightIndices={totalWeightIndices}
+        tableStyle={{
+          borderTopRightRadius: radius,
+          borderBottomRightRadius: radius
+        }}
+        render={(weightIndex, weight) =>
+          <CirCleContainer
+            weight={weight}
+          // side={side}
+          // selected={this.isSelected(weightIndex, side)}
+          // onClick={this.onCirCleClick.bind(this, weightIndex, side)}
+          />
+        }
+      />
+    )
   }
 
   render() {
@@ -194,9 +284,9 @@ class App extends Component {
           <h1 className="App-title">Bridge And Torch</h1>
         </header>
         <div className='wrapper'>
-          {this.renderWeightList('L')}
+          {this.renderLeftWeightList()}
           {this.renderMiddlePanel()}
-          {this.renderWeightList('R')}
+          {this.renderRightWeightList()}
         </div>
       </div>
     );
