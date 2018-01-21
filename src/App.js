@@ -15,8 +15,13 @@ class App extends Component {
       PLAYING_R2L: 2,
       DONE: 3
     }
+    this.colors = {
+      NONE_EMPTY: 'crimson',
+      EMPTY: 'darkcyan'
+    }
     this.LEFT = 'L'
     this.RIGHT = 'R'
+
     this.state = {
       gameState: this.gameStates.PREPARING,
       weights: [],
@@ -235,12 +240,13 @@ class App extends Component {
         }}
         // side={side}
         render={(weightIndex, weight) =>
-          <CirCleContainer
-            weight={weight}
-            // side={side}
+          <Circle
+            backgroundColor={weight !== undefined ? this.colors.NONE_EMPTY : this.colors.EMPTY}
             selected={this.isLeftSelected(weightIndex)}
             onClick={this.onLeftWeightClick.bind(this, weightIndex)}
-          />
+          >
+            {weight}
+          </Circle>
         }
       />
     )
@@ -265,12 +271,13 @@ class App extends Component {
           borderBottomRightRadius: radius
         }}
         render={(weightIndex, weight) =>
-          <CirCleContainer
-            weight={weight}
-          // side={side}
-          // selected={this.isSelected(weightIndex, side)}
-          // onClick={this.onCirCleClick.bind(this, weightIndex, side)}
-          />
+          <Circle
+            backgroundColor={weight !== undefined ? this.colors.NONE_EMPTY : this.colors.EMPTY}
+          // selected={this.isLeftSelected(weightIndex)}
+          // onClick={this.onLeftWeightClick.bind(this, weightIndex)}
+          >
+            {weight}
+          </Circle>
         }
       />
     )
