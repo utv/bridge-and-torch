@@ -52,6 +52,14 @@ class App extends Component {
     return false
   }
 
+  moveL2R(weights) {
+    return weights.map((w, wIdx) => {
+      if (this.state.selectedWeightIndices.includes(wIdx))
+        return w * -1
+      return w
+    })
+  }
+
   onMiddleButtonClick(e) {
     e.preventDefault()
     if (this.state.gameState === this.gameStates.PREPARING)
@@ -157,6 +165,8 @@ class App extends Component {
   }
 
   onLeftWeightClick(weightIndex, e) {
+    if (this.state.gameState === this.gameStates.PREPARING) return
+
     if (!this.isLeftSelected(weightIndex))
       this.setState((prevState) => {
         return {
@@ -197,7 +207,7 @@ class App extends Component {
   isLeftSelected(weightIndex) {
     const { gameState } = this.state
     return (
-      gameState === this.gameStates.PLAYING_L2R || gameState === this.gameStates.PREPARING
+      gameState === this.gameStates.PLAYING_L2R
       && this.state.weights[weightIndex] > 0
       && this.state.selectedWeightIndices.includes(weightIndex)
     )
@@ -224,9 +234,10 @@ class App extends Component {
     const weightIndices = this.state.weights.map((w, index) => {
       if (w > 0) return index
       return null
-    })
+    }).filter((wIndex) => wIndex !== null)
 
-    const emptyWeightIndices = new Array(this.state.weights.length - weightIndices.length).fill('')
+    const emptyWeightIndices =
+      new Array(this.state.weights.length - weightIndices.length).fill(null)
     const totalWeightIndices = weightIndices.concat(emptyWeightIndices)
     const radius = '15px'
 
@@ -241,11 +252,19 @@ class App extends Component {
         // side={side}
         render={(weightIndex, weight) =>
           <Circle
-            backgroundColor={weight !== undefined ? this.colors.NONE_EMPTY : this.colors.EMPTY}
+            backgroundColor={
+              weight !== undefined && weight > 0
+                ? this.colors.NONE_EMPTY
+                : this.colors.EMPTY
+            }
             selected={this.isLeftSelected(weightIndex)}
             onClick={this.onLeftWeightClick.bind(this, weightIndex)}
           >
-            {weight}
+            {
+              weight !== undefined && weight > 0
+                ? weight
+                : ''
+            }
           </Circle>
         }
       />
@@ -256,9 +275,10 @@ class App extends Component {
     const weightIndices = this.state.weights.map((w, index) => {
       if (w < 0) return index
       return null
-    })
+    }).filter((wIndex) => wIndex !== null)
 
-    const emptyWeightIndices = new Array(this.state.weights.length - weightIndices.length).fill('')
+    const emptyWeightIndices =
+      new Array(this.state.weights.length - weightIndices.length).fill(null)
     const totalWeightIndices = weightIndices.concat(emptyWeightIndices)
     const radius = '15px'
 
@@ -272,11 +292,19 @@ class App extends Component {
         }}
         render={(weightIndex, weight) =>
           <Circle
-            backgroundColor={weight !== undefined ? this.colors.NONE_EMPTY : this.colors.EMPTY}
+            backgroundColor={
+              weight !== undefined && weight < 0
+                ? this.colors.NONE_EMPTY
+                : this.colors.EMPTY
+            }
           // selected={this.isLeftSelected(weightIndex)}
           // onClick={this.onLeftWeightClick.bind(this, weightIndex)}
           >
-            {weight}
+            {
+              weight !== undefined && weight < 0
+                ? weight * -1
+                : ''
+            }
           </Circle>
         }
       />
