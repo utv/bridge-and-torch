@@ -71,6 +71,7 @@ class App extends Component {
 
     else if (
       this.state.gameState === this.gameStates.PLAYING_L2R
+      && this.state.selectedWeightIndices.length > 0
     )
       this.setState((prevState) => ({
         weights: this.moveWeights(prevState.weights),
@@ -82,6 +83,7 @@ class App extends Component {
 
     else if (
       this.state.gameState === this.gameStates.PLAYING_R2L
+      && this.state.selectedWeightIndices.length > 0
     )
       this.setState((prevState) => ({
         weights: this.moveWeights(prevState.weights),
@@ -128,7 +130,7 @@ class App extends Component {
     const startButton = this.state.gameState === this.gameStates.PREPARING
       ?
       (
-        < button onClick={this.onMiddleButtonClick.bind(this)} >
+        <button onClick={this.onMiddleButtonClick.bind(this)} >
           {this.state.buttonCaption}
         </button>
       )
@@ -146,7 +148,8 @@ class App extends Component {
   }
 
   onRightWeightClick(weightIndex, e) {
-    if (this.state.gameState !== this.gameStates.PLAYING_R2L) return
+    if (this.state.gameState !== this.gameStates.PLAYING_R2L || weightIndex === null)
+      return
 
     if (!this.isRightSelected(weightIndex))
       this.setState((prevState) => {
@@ -165,7 +168,8 @@ class App extends Component {
   }
 
   onLeftWeightClick(weightIndex, e) {
-    if (this.state.gameState !== this.gameStates.PLAYING_L2R) return
+    if (this.state.gameState !== this.gameStates.PLAYING_L2R || weightIndex === null)
+      return
 
     if (!this.isLeftSelected(weightIndex))
       this.setState((prevState) => {
@@ -195,6 +199,7 @@ class App extends Component {
     const { gameState } = this.state
     return (
       gameState === this.gameStates.PLAYING_R2L
+
       && this.state.selectedWeightIndices.includes(weightIndex)
     )
   }
@@ -226,7 +231,7 @@ class App extends Component {
                 ? this.colors.NONE_EMPTY
                 : this.colors.EMPTY
             }
-            selected={this.isLeftSelected(weightIndex)}
+            selected={weight !== undefined && this.isLeftSelected(weightIndex)}
             onClick={this.onLeftWeightClick.bind(this, weightIndex)}
           >
             {
@@ -266,7 +271,7 @@ class App extends Component {
                 ? this.colors.NONE_EMPTY
                 : this.colors.EMPTY
             }
-            selected={this.isRightSelected(weightIndex)}
+            selected={weight !== undefined && this.isRightSelected(weightIndex)}
             onClick={this.onRightWeightClick.bind(this, weightIndex)}
           >
             {
