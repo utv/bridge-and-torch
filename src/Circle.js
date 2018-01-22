@@ -10,9 +10,7 @@ export default class Circle extends React.Component {
       typeof this.props.selected !== 'undefined' && this.props.selected
         ? '2px solid'
         : ''
-    const backgroundColor = this.props.backgroundColor
-    const outline = this.props.selected ? 'solid' : 'none'
-    console.log('backgroundColor', backgroundColor)
+
     return (
       <div
         style={{

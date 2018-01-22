@@ -4,7 +4,6 @@ import './App.css';
 
 import WeightList from './WeightList'
 import Circle from './Circle'
-import CirCleContainer from './CirCleContainer'
 
 class App extends Component {
   constructor(props) {
@@ -182,27 +181,6 @@ class App extends Component {
             prevState.selectedWeightIndices.filter((wIndex) => wIndex !== weightIndex)
         }
       })
-  }
-
-  isSelected(weightIndex, side) {
-
-    if (
-      side === 'L'
-      && this.state.gameState === this.gameStates.PLAYING_L2R
-      && this.state.weights[weightIndex] > 0
-      && this.state.selectedWeightIndices.includes(weightIndex)
-    )
-      return true
-
-    if (
-      side === 'R'
-      && this.state.gameState === this.gameStates.PLAYING_R2L
-      && this.state.weights[weightIndex] < 0
-      && this.state.selectedWeightIndices.includes(weightIndex)
-    )
-      return true
-
-    return false
   }
 
   isLeftSelected(weightIndex) {
