@@ -52,7 +52,7 @@ class App extends Component {
     return false
   }
 
-  moveL2R(weights) {
+  moveWeights(weights) {
     return weights.map((w, wIdx) => {
       if (this.state.selectedWeightIndices.includes(wIdx))
         return w * -1
@@ -74,18 +74,20 @@ class App extends Component {
       this.state.gameState === this.gameStates.PLAYING_L2R
     )
       this.setState((prevState) => ({
-        weights: this.moveL2R(prevState.weights),
+        weights: this.moveWeights(prevState.weights),
         inputWeight: '',
-        selectedWeightIndices: []
+        buttonCaption: '<==',
+        selectedWeightIndices: [],
+        gameState: this.gameStates.PLAYING_R2L
       }))
 
     else if (
       this.state.gameState === this.gameStates.PLAYING_R2L
     )
       this.setState((prevState) => ({
-        weights: this.moveR2L(prevState.weights),
+        weights: this.moveWeights(prevState.weights),
         inputWeight: '',
-        buttonCaption: '<==',
+        buttonCaption: '==>',
         selectedWeightIndices: [],
         gameState: this.gameStates.PLAYING_L2R
       }))
@@ -114,7 +116,13 @@ class App extends Component {
       )
       :
       (
-        <button onClick={this.onMiddleButtonClick.bind(this)}>
+        <button
+          onClick={
+            this.state.selectedWeightIndices.length > 0
+              ? this.onMiddleButtonClick.bind(this)
+              : () => { }
+          }
+        >
           {this.state.buttonCaption}
         </button>
       )
@@ -138,34 +146,27 @@ class App extends Component {
     )
   }
 
-  onCirCleClick(clickedWeightIndex, side, e) {
+  onRightWeightClick(weightIndex, e) {
+    if (this.state.gameState !== this.gameStates.PLAYING_R2L) return
 
-    const { gameState, weights } = this.state
-    const isClickedOnLeftValid =
-      (
-        side === 'L'
-        && gameState === this.gameStates.PLAYING_L2R
-        && weights[clickedWeightIndex] > 0
-      )
-    const isClickedOnRightValid =
-      (
-        side === 'R'
-        && gameState === this.gameStates.PLAYING_R2L
-        && weights[clickedWeightIndex] < 0
-      )
-
-    if (isClickedOnLeftValid || isClickedOnRightValid)
+    if (!this.isRightSelected(weightIndex))
       this.setState((prevState) => {
-
         return {
           selectedWeightIndices:
-            prevState.selectedWeightIndices.concat(clickedWeightIndex)
+            prevState.selectedWeightIndices.concat(weightIndex)
+        }
+      })
+    else
+      this.setState((prevState) => {
+        return {
+          selectedWeightIndices:
+            prevState.selectedWeightIndices.filter((wIndex) => wIndex !== weightIndex)
         }
       })
   }
 
   onLeftWeightClick(weightIndex, e) {
-    if (this.state.gameState === this.gameStates.PREPARING) return
+    if (this.state.gameState !== this.gameStates.PLAYING_L2R) return
 
     if (!this.isLeftSelected(weightIndex))
       this.setState((prevState) => {
@@ -208,27 +209,17 @@ class App extends Component {
     const { gameState } = this.state
     return (
       gameState === this.gameStates.PLAYING_L2R
-      && this.state.weights[weightIndex] > 0
       && this.state.selectedWeightIndices.includes(weightIndex)
     )
   }
 
-  /* renderWeightList(side) {
+  isRightSelected(weightIndex) {
+    const { gameState } = this.state
     return (
-      <WeightList
-        weights={this.state.weights}
-        side={side}
-        render={(weightIndex, weight, side) =>
-          <CirCleContainer
-            weight={weight}
-            side={side}
-            selected={this.isSelected(weightIndex, side)}
-            onClick={this.onCirCleClick.bind(this, weightIndex, side)}
-          />
-        }
-      />
+      gameState === this.gameStates.PLAYING_R2L
+      && this.state.selectedWeightIndices.includes(weightIndex)
     )
-  } */
+  }
 
   renderLeftWeightList() {
     const weightIndices = this.state.weights.map((w, index) => {
@@ -297,8 +288,8 @@ class App extends Component {
                 ? this.colors.NONE_EMPTY
                 : this.colors.EMPTY
             }
-          // selected={this.isLeftSelected(weightIndex)}
-          // onClick={this.onLeftWeightClick.bind(this, weightIndex)}
+            selected={this.isRightSelected(weightIndex)}
+            onClick={this.onRightWeightClick.bind(this, weightIndex)}
           >
             {
               weight !== undefined && weight < 0
