@@ -6,10 +6,11 @@ export default class Circle extends React.Component {
   }
 
   render() {
+    const { selected, backgroundColor } = this.props
     const border =
-      typeof this.props.selected !== 'undefined' && this.props.selected
-        ? '2px solid'
-        : ''
+      typeof selected !== 'undefined' && selected
+        ? `2px solid`
+        : 'none'
 
     return (
       <div
@@ -18,9 +19,10 @@ export default class Circle extends React.Component {
           width: '100px',
           height: '100px',
           borderRadius: '50%',
-          lineHeight: '100px',
-          backgroundColor: this.props.backgroundColor,
+          lineHeight: `100px`,
+          backgroundColor: backgroundColor,
           border: border,
+          boxSizing: 'border-box'
         }}
         onClick={this.props.onClick}
       >
