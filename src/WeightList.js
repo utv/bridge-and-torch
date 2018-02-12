@@ -6,12 +6,12 @@ export default class WeightList extends React.Component {
   render() {
     if (this.props.weights.length === 0) return null
     // const radius = '15px'
-
+    const { weights, weightIndices, render, tableStyle } = this.props
     const NUM_COLUMNS = 3
-    const rows = this.props.weightIndices.reduce((acc, wIndex, idx) => {
+    const rows = weightIndices.reduce((acc, wIndex, idx) => {
       const td = (
         <td key={idx}>
-          {this.props.render(wIndex, this.props.weights[wIndex], this.props.side)}
+          {render(wIndex, weights[wIndex])}
         </td>
       )
 
@@ -27,7 +27,7 @@ export default class WeightList extends React.Component {
 
 
     return (
-      <table style={this.props.tableStyle}>
+      <table style={tableStyle}>
         <tbody>
           {rows.map((row, rid) => <tr key={rid}>{row}</tr>)}
         </tbody>

@@ -20,7 +20,14 @@ class App extends Component {
     }
     this.LEFT = 'L'
     this.RIGHT = 'R'
-
+    this.MAX_SELECTIONS = 2
+    /* 
+    Example
+      weights: [5, 10, 12] 
+        --> All on the left side
+      weights: [-5, -10, 12] 
+        --> 5 and 10 have crossed the bridge, costs 10(Max btw 5,10)
+    */
     this.state = {
       gameState: this.gameStates.PREPARING,
       weights: [],
@@ -52,6 +59,7 @@ class App extends Component {
   }
 
   moveWeights(weights) {
+    // move each weight by multiplying -1
     return weights.map((w, wIdx) => {
       if (this.state.selectedWeightIndices.includes(wIdx))
         return w * -1
@@ -147,24 +155,44 @@ class App extends Component {
     )
   }
 
-  onRightWeightClick(weightIndex, e) {
-    if (this.state.gameState !== this.gameStates.PLAYING_R2L || weightIndex === null)
-      return
+  cancelSelection(weightIndex) {
+    this.setState((prevState) => {
+      return {
+        selectedWeightIndices:
+          prevState.selectedWeightIndices.filter((wIndex) => wIndex !== weightIndex)
+      }
+    })
+  }
 
-    if (!this.isRightSelected(weightIndex))
+  addToSelection(weightIndex) {
+    const { selectedWeightIndices } = this.state
+    // remove last selctions and add new one
+    if (selectedWeightIndices.length === this.MAX_SELECTIONS)
       this.setState((prevState) => {
+        const len = prevState.selectedWeightIndices.length
+        let newSelections = prevState.selectedWeightIndices.slice(0, len - 1)
+        newSelections.concat(weightIndex)
         return {
-          selectedWeightIndices:
-            prevState.selectedWeightIndices.concat(weightIndex)
+          selectedWeightIndices: newSelections.concat(weightIndex)
         }
       })
     else
       this.setState((prevState) => {
         return {
           selectedWeightIndices:
-            prevState.selectedWeightIndices.filter((wIndex) => wIndex !== weightIndex)
+            prevState.selectedWeightIndices.concat(weightIndex)
         }
       })
+  }
+
+  onRightWeightClick(weightIndex, e) {
+    if (this.state.gameState !== this.gameStates.PLAYING_R2L || weightIndex === null)
+      return
+
+    if (!this.isRightSelected(weightIndex))
+      this.addToSelection(weightIndex)
+    else
+      this.cancelSelection(weightIndex)
   }
 
   onLeftWeightClick(weightIndex, e) {
@@ -172,19 +200,9 @@ class App extends Component {
       return
 
     if (!this.isLeftSelected(weightIndex))
-      this.setState((prevState) => {
-        return {
-          selectedWeightIndices:
-            prevState.selectedWeightIndices.concat(weightIndex)
-        }
-      })
+      this.addToSelection(weightIndex)
     else
-      this.setState((prevState) => {
-        return {
-          selectedWeightIndices:
-            prevState.selectedWeightIndices.filter((wIndex) => wIndex !== weightIndex)
-        }
-      })
+      this.cancelSelection(weightIndex)
   }
 
   isLeftSelected(weightIndex) {
@@ -199,22 +217,25 @@ class App extends Component {
     const { gameState } = this.state
     return (
       gameState === this.gameStates.PLAYING_R2L
-
       && this.state.selectedWeightIndices.includes(weightIndex)
     )
   }
 
   renderLeftWeightList() {
+    // Indices of weights on the left
     const weightIndices = this.state.weights.map((w, index) => {
       if (w > 0) return index
       return null
     }).filter((wIndex) => wIndex !== null)
 
+    // add nulls to an array of indices for rendering empty column on table(WeightList)
     const emptyWeightIndices =
       new Array(this.state.weights.length - weightIndices.length).fill(null)
     const totalWeightIndices = weightIndices.concat(emptyWeightIndices)
     const radius = '15px'
 
+    // WeightList on the left and right are tables with the same number of row&column
+    // Because of adding
     return (
       <WeightList
         weights={this.state.weights}
@@ -246,11 +267,13 @@ class App extends Component {
   }
 
   renderRightWeightList() {
+    // Indices of weights on the right
     const weightIndices = this.state.weights.map((w, index) => {
       if (w < 0) return index
       return null
     }).filter((wIndex) => wIndex !== null)
 
+    // add nulls to an array of indices for rendering empty column on table(WeightList)
     const emptyWeightIndices =
       new Array(this.state.weights.length - weightIndices.length).fill(null)
     const totalWeightIndices = weightIndices.concat(emptyWeightIndices)
